@@ -449,6 +449,7 @@ export default function PromptInput(props: PromptInputProps) {
               <textarea
                 ref={textareaRef}
                 class={`prompt-input ${mode() === "shell" ? "shell-mode" : ""} ${expandState() === "expanded" ? "is-expanded" : ""}`}
+                dir="auto"
                 placeholder={getPlaceholder()}
                 value={prompt()}
                 onInput={handleInput}

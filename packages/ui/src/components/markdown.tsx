@@ -201,6 +201,7 @@ export function Markdown(props: MarkdownProps) {
     <div
       ref={containerRef}
       class={proseClass()}
+      dir="auto"
       data-view="markdown"
       data-part-id={resolved().partId}
       data-markdown-theme={resolved().themeKey}
