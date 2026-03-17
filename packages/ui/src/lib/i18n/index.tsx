@@ -7,14 +7,15 @@ import { frMessages } from "./messages/fr"
 import { ruMessages } from "./messages/ru"
 import { jaMessages } from "./messages/ja"
 import { zhHansMessages } from "./messages/zh-Hans"
+import { heMessages } from "./messages/he"
 
 type Messages = Record<string, string>
 
 export type TranslateParams = Record<string, unknown>
 
-export type Locale = "en" | "es" | "fr" | "ru" | "ja" | "zh-Hans"
+export type Locale = "en" | "es" | "fr" | "ru" | "ja" | "zh-Hans" | "he"
 
-const SUPPORTED_LOCALES: readonly Locale[] = ["en", "es", "fr", "ru", "ja", "zh-Hans"] as const
+const SUPPORTED_LOCALES: readonly Locale[] = ["en", "es", "fr", "ru", "ja", "zh-Hans", "he"] as const
 
 const messagesByLocale: Record<Locale, Messages> = {
   en: enMessages,
@@ -23,6 +24,7 @@ const messagesByLocale: Record<Locale, Messages> = {
   ru: ruMessages,
   ja: jaMessages,
   "zh-Hans": zhHansMessages,
+  he: heMessages,
 }
 
 function normalizeLocaleTag(value: string): string {
