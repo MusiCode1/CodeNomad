@@ -80,11 +80,11 @@ const GitChangesTab: Component<GitChangesTabProps> = (props) => {
   })
 
   const emptyViewerMessage = createMemo(() => {
-    if (!hasSession()) return "Select a session to view changes."
+    if (!hasSession()) return props.t("instanceShell.gitChanges.noSessionSelected")
     const currentEntries = entries()
-    if (currentEntries === null) return "Loading git changes…"
-    if (nonDeleted().length === 0) return "No git changes yet."
-    return "No file selected."
+    if (currentEntries === null) return props.t("instanceShell.gitChanges.loading")
+    if (nonDeleted().length === 0) return props.t("instanceShell.gitChanges.empty")
+    return props.t("instanceShell.filesShell.viewerEmpty")
   })
 
   const renderContent = (): JSX.Element => {
