@@ -128,6 +128,11 @@ export const I18nProvider: ParentComponent = (props) => {
     setGlobalRevision((value) => value + 1)
   })
 
+  const RTL_LOCALES = new Set<Locale>(["he"])
+  createEffect(() => {
+    document.documentElement.dir = RTL_LOCALES.has(locale()) ? "rtl" : "ltr"
+  })
+
   onCleanup(() => {
     globalMessages = previousMessages
     setGlobalRevision((value) => value + 1)
