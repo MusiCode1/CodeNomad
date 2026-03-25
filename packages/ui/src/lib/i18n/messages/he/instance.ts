@@ -114,6 +114,8 @@ export const instanceMessages = {
   "instanceShell.sessionChanges.filesChanged": "{count} קבצים שונו",
   "instanceShell.sessionChanges.actions.show": "הצג שינויים",
 
+  "instanceShell.gitChanges.deleted": "נמחק",
+
   "instanceShell.filesShell.fileListTitle": "רשימת קבצים",
   "instanceShell.filesShell.mobileSelectorLabel": "בחר קובץ",
   "instanceShell.filesShell.mobileSelectorEmpty": "בחר קובץ",

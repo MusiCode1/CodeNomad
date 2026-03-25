@@ -372,6 +372,10 @@
   transform: translate(-100%, -50%);
 }
 
+[dir="rtl"] .message-timeline-xray-rib {
+  transform: translate(100%, -50%);
+}
+
 .message-timeline-xray-token-label {
   position: absolute;
   inset-inline-end: 100%;

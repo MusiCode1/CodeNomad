@@ -1005,11 +1005,11 @@ function CompactionCard(props: CompactionCardProps) {
   return (
     <div
       class={`delete-hover-scope ${containerClass()} relative`}
-      style={{ "border-left": `4px solid ${borderColor()}` }}
+      style={{ "border-inline-start": `4px solid ${borderColor()}` }}
       role="status"
       aria-label={t("messageBlock.compaction.ariaLabel")}
     >
-      <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+      <div class="absolute end-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
         <Show when={props.showDeleteMessage}>
           <button
             type="button"
@@ -1112,7 +1112,7 @@ function StepCard(props: StepCardProps) {
     }
   }
 
-  const finishStyle = () => (props.borderColor ? { "border-left-color": props.borderColor } : undefined)
+  const finishStyle = () => (props.borderColor ? { "border-inline-start-color": props.borderColor } : undefined)
 
   const canDeleteMessage = () =>
     Boolean(props.showDeleteMessage && props.instanceId && props.sessionId && props.messageId) && !deletingMessage()
@@ -1183,7 +1183,7 @@ function StepCard(props: StepCardProps) {
       <div class={`message-step-card message-step-finish message-step-finish-flush relative`} style={finishStyle()}>
         <Show when={props.showDeleteMessage && props.messageId}>
           <input
-            class="message-select-checkbox absolute left-2 top-1/2 -translate-y-1/2"
+            class="message-select-checkbox absolute start-2 top-1/2 -translate-y-1/2"
             type="checkbox"
             checked={isSelectedForDeletion()}
             onClick={(event) => {
@@ -1200,7 +1200,7 @@ function StepCard(props: StepCardProps) {
         </Show>
 
         <Show when={props.showDeleteMessage}>
-          <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+          <div class="absolute end-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
             <button
               type="button"
               class="message-action-button"

@@ -716,7 +716,7 @@ const InstanceShell2: Component<InstanceShellProps> = (props) => {
                   />
                 </Show>
 
-                <div class="ml-auto flex items-center session-header-hints">
+                <div class="ms-auto flex items-center session-header-hints">
                   <Show when={hasPendingRequests()} fallback={renderActiveSessionStatusPill()}>
                     <PermissionNotificationBanner
                       instanceId={props.instance.id}

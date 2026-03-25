@@ -208,6 +208,7 @@ export default function WorktreeSelector(props: WorktreeSelectorProps) {
                 <div class="flex items-center gap-2 min-w-0">
                   <span
                     class="selector-option-description flex-1 min-w-0 truncate font-mono"
+                    dir="ltr"
                     title={opt.directory}
                   >
                     {displayPathFor(opt.directory)}
@@ -357,8 +358,8 @@ export default function WorktreeSelector(props: WorktreeSelectorProps) {
                 {(target) => (
                   <div class="rounded-lg border border-base bg-surface-secondary p-4">
                     <p class="text-xs font-medium text-muted uppercase tracking-wide mb-1">Worktree</p>
-                    <p class="text-sm font-mono text-primary break-all">{target().slug}</p>
-                    <p class="text-[11px] text-secondary mt-2 break-all font-mono">{target().directory}</p>
+                    <p class="text-sm font-mono text-primary break-all" dir="ltr">{target().slug}</p>
+                    <p class="text-[11px] text-secondary mt-2 break-all font-mono" dir="ltr">{target().directory}</p>
                   </div>
                 )}
               </Show>

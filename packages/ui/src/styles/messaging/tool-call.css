@@ -797,7 +797,7 @@
 }
 
 .tool-call-emoji {
-  @apply text-base mr-1;
+  @apply text-base me-1;
 }
 
 .tool-call-action-button {

@@ -434,7 +434,9 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.25rem 0.6rem 0.25rem 0;
+  padding-block: 0.25rem;
+  padding-inline-start: 0;
+  padding-inline-end: 0.6rem;
 }
 
 .message-reasoning-toggle:hover {

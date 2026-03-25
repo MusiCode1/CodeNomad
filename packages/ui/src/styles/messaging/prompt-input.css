@@ -374,7 +374,7 @@
 .attachment-remove,
 .attachment-download,
 .attachment-expand {
-  @apply ml-0.5 flex h-4 w-4 items-center justify-center rounded transition-colors;
+  @apply ms-0.5 flex h-4 w-4 items-center justify-center rounded transition-colors;
 }
 
 .attachment-remove:hover,
