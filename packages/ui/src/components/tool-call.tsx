@@ -1,5 +1,5 @@
 import { createSignal, Show, createEffect, createMemo, onCleanup, type Accessor } from "solid-js"
-import { ArrowRightSquare, Check, Copy, Hourglass, Loader2, XCircle } from "lucide-solid"
+import { ArrowRightSquare, Check, Copy, Hourglass, Loader2, Volume2, XCircle } from "lucide-solid"
 import { stringify as stringifyYaml } from "yaml"
 import { messageStoreBus } from "../stores/message-v2/bus"
 import { useTheme } from "../lib/theme"
@@ -45,6 +45,7 @@ import { getLogger } from "../lib/logger"
 import { useSpeech } from "../lib/hooks/use-speech"
 import SpeechActionButton from "./speech-action-button"
 import { createFollowScroll } from "../lib/follow-scroll"
+import ActionOverflowMenu, { type ActionOverflowMenuItem } from "./action-overflow-menu"
 
 const log = getLogger("session")
 
@@ -185,6 +186,7 @@ function ToolCallDetails(props: {
 
   const [permissionSubmitting, setPermissionSubmitting] = createSignal(false)
   const [permissionError, setPermissionError] = createSignal<string | null>(null)
+  const [permissionRejectReasonOpen, setPermissionRejectReasonOpen] = createSignal(false)
 
   const followScroll = createFollowScroll({
     getScrollTopSnapshot: props.scrollTopSnapshot,
@@ -224,13 +226,13 @@ function ToolCallDetails(props: {
     })
   })
 
-  async function handlePermissionResponse(permission: PermissionRequestLike, response: "once" | "always" | "reject") {
+  async function handlePermissionResponse(permission: PermissionRequestLike, response: "once" | "always" | "reject", message?: string) {
     if (!permission) return
     setPermissionSubmitting(true)
     setPermissionError(null)
     try {
       const sessionId = getPermissionSessionId(permission) || props.sessionId
-      await sendPermissionResponse(props.instanceId, sessionId, permission.id, response)
+      await sendPermissionResponse(props.instanceId, sessionId, permission.id, response, message)
     } catch (error) {
       log.error("Failed to send permission response", error)
       setPermissionError(error instanceof Error ? error.message : props.t("toolCall.permission.errors.unableToUpdate"))
@@ -243,6 +245,8 @@ function ToolCallDetails(props: {
     const activeKey = activePermissionKey()
     if (!activeKey) return
     const handler = (event: KeyboardEvent) => {
+      if (isTextInputFocused()) return
+      if (permissionRejectReasonOpen()) return
       const permission = permissionDetails()
       if (!permission || !props.isPermissionActive()) return
       if (event.key === "Enter") {
@@ -251,9 +255,6 @@ function ToolCallDetails(props: {
       } else if (event.key === "a" || event.key === "A") {
         event.preventDefault()
         void handlePermissionResponse(permission, "always")
-      } else if (event.key === "d" || event.key === "D") {
-        event.preventDefault()
-        void handlePermissionResponse(permission, "reject")
       }
     }
     document.addEventListener("keydown", handler)
@@ -482,7 +483,8 @@ function ToolCallDetails(props: {
       error={permissionError}
       renderDiff={renderDiffContent}
       fallbackSessionId={() => props.sessionId}
-      onRespond={(permission, sessionId, response) => void handlePermissionResponse(permission, response)}
+      onRejectReasonOpenChange={setPermissionRejectReasonOpen}
+      onRespond={(permission, sessionId, response, message) => void handlePermissionResponse(permission, response, message)}
     />
   )
 
@@ -821,23 +823,62 @@ export default function ToolCall(props: ToolCallProps) {
     await copyToClipboard(text)
   }
 
+  const actionMenuItems = (): ActionOverflowMenuItem[] => {
+    const items: ActionOverflowMenuItem[] = []
+
+    if (hasToolInput()) {
+      items.push({
+        key: "toggle-input",
+        label: isToolInputVisible() ? t("toolCall.header.hideInputTitle") : t("toolCall.header.showInputTitle"),
+        icon: <ArrowRightSquare class="w-3.5 h-3.5" aria-hidden="true" />,
+        onSelect: () => {
+          if (!expanded()) toggle()
+          const currentlyVisible = isToolInputVisible()
+          setToolInputVisibilityOverride(currentlyVisible ? "hidden" : "expanded")
+        },
+      })
+    }
+
+    items.push({
+      key: "copy",
+      label: t("toolCall.header.copyTitle"),
+      icon: <Copy class="w-3.5 h-3.5" aria-hidden="true" />,
+      onSelect: async () => {
+        const text = headerText()
+        if (!text) return
+        await copyToClipboard(text)
+      },
+    })
+
+    if (canSpeakToolCall()) {
+      items.push({
+        key: "speak",
+        label: speech.buttonTitle(),
+        icon: <Volume2 class="w-3.5 h-3.5" aria-hidden="true" />,
+        onSelect: () => void speech.toggle(),
+      })
+    }
+
+    return items
+  }
+
   const status = () => toolState()?.status || ""
 
   return (
-    <div
+      <div
 
-      ref={(element) => {
+        ref={(element) => {
         setToolCallRootEl(element || undefined)
       }}
       class={`tool-call ${combinedStatusClass()}`}
       data-part-type="tool"
       data-tool-name={toolName()}
       data-instance-id={props.instanceId}
-      data-session-id={props.sessionId}
-      data-message-id={props.messageId}
-      data-part-id={toolCallIdentifier()}
-    >
-      <div class="tool-call-header">
+        data-session-id={props.sessionId}
+        data-message-id={props.messageId}
+        data-part-id={toolCallIdentifier()}
+      >
+      <div class="tool-call-header" data-action-overflow={actionMenuItems().length > 1 ? "true" : undefined}>
         <button
           type="button"
           class="tool-call-header-toggle"
@@ -885,6 +926,13 @@ export default function ToolCall(props: ToolCallProps) {
             isPlaying={speech.isPlaying()}
           />
         </Show>
+
+        <ActionOverflowMenu
+          items={actionMenuItems()}
+          label={t("messageItem.actions.more")}
+          triggerClass="tool-call-header-copy"
+          minItems={2}
+        />
 
         <ToolStatusIndicator status={status} />
       </div>
